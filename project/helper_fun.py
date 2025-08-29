@@ -4,6 +4,9 @@ from OpenGL.GLUT import *
 from OpenGL.GLUT import GLUT_BITMAP_HELVETICA_18
 import math, random, sys, time
 PI = math.pi
+ARENA_HALF = 25.0
+
+
 
 def deg2rad(d): return d * (PI / 180.0)
 def rad2deg(r): return r * (180.0 / PI)
@@ -36,3 +39,8 @@ def drawCylinder(r, h):
     q = gluNewQuadric()
     gluCylinder(q, r, r, h, 16, 1)
     gluDeleteQuadric(q)
+
+
+def insideWalls(x, z, margin=0.5):
+    return (-ARENA_HALF + margin < x < ARENA_HALF - margin and
+            -ARENA_HALF + margin < z < ARENA_HALF - margin)

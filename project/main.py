@@ -6,8 +6,8 @@ from helper_fun import *
 from model import *
 from classes import Player,player
 from camera import setupCamera
-
-
+from draw_world import *
+from player_movement import *
 
 # Window and world settings
 WIN_W, WIN_H = 1024, 720
@@ -15,7 +15,7 @@ ARENA_HALF = 25.0
 GRID_STEP = 1.0
 CAMERA_DIST = 10.0
 PLAYER_Y = 0.75
-MOVE_SPEED = 10.0
+MOVE_SPEED = 4.0
 
 # Camera settings
 firstPerson = False
@@ -26,58 +26,6 @@ PI = math.pi
 
 
 
-
-
-def drawGrid(half, step):
-    glDisable(GL_LIGHTING)
-    glColor3f(0.396, 0.263, 0.129)  # Brown ground
-    glBegin(GL_QUADS)
-    glVertex3f(-half, 0, -half)
-    glVertex3f(half, 0, -half)
-    glVertex3f(half, 0, half)
-    glVertex3f(-half, 0, half)
-    glEnd()
-
-    # Grid lines
-    glColor3f(0.5, 0.5, 0.5)
-    glBegin(GL_LINES)
-    x = -half
-    while x <= half + 1e-6:
-        glVertex3f(x, 0.001, -half)
-        glVertex3f(x, 0.001, half)
-        x += step
-    z = -half
-    while z <= half + 1e-6:
-        glVertex3f(-half, 0.001, z)
-        glVertex3f(half, 0.001, z)
-        z += step
-    glEnd()
-    glEnable(GL_LIGHTING)
-
-
-
-# Collision check
-def insideWalls(x, z, margin=0.5):
-    return (-ARENA_HALF + margin < x < ARENA_HALF - margin and
-            -ARENA_HALF + margin < z < ARENA_HALF - margin)
-
-# Movement
-def movePlayer(dirSign, dt):
-    fx, fz = forward_vec(player.angDeg)
-    nx = player.pos[0] + dirSign * MOVE_SPEED * dt * fx
-    nz = player.pos[2] + dirSign * MOVE_SPEED * dt * fz
-    if insideWalls(nx, nz):
-        player.pos[0] = nx
-        player.pos[2] = nz
-
-def strafePlayer(dirSign, dt):
-    fx, fz = forward_vec(player.angDeg)
-    nx = player.pos[0] + dirSign * MOVE_SPEED * dt * fz
-    nz = player.pos[2] - dirSign * MOVE_SPEED * dt * fx
-    if insideWalls(nx, nz):
-        player.pos[0] = nx
-        player.pos[2] = nz
-
 # Display
 def on_display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -86,7 +34,7 @@ def on_display():
     glPushMatrix()
     glTranslatef(player.pos[0], player.pos[1], player.pos[2])
     glRotatef(player.angDeg, 0, 1, 0)
-    Abrar_model(player.lying)
+    Sanjoy_model(player.lying)
     glPopMatrix()
     glutSwapBuffers()
 
