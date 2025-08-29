@@ -1,0 +1,11 @@
+# Player settings
+PLAYER_Y = 0.75
+MOVE_SPEED = 10.0
+
+
+class Player:
+    def __init__(self):
+        self.pos = [0.0, PLAYER_Y, 0.0]
+        self.angDeg = 0.0
+        self.lying = False
+player = Player()
