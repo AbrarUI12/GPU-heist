@@ -1,0 +1,48 @@
+1)1st person mode
+2)3 floor design
+3)Charecter design
+4)Enemy models
+5)boss design & implementation
+6)game logic
+#############################
+
+###########enemy#############
+1) line of sight e thakle dekbe
+2) collision detection
+3)variations
+
+
+#########boss#############  sanjoy
+1)basic Ai
+2)fight us, throw balls at us
+3)health bar
+4)stun timer
+
+###########Charecter##############
+1)3 char
+2)heakth
+3) special powers
+4)ballz
+
+
+##############gamelogic#########  abrar
+1)obstables to jump
+2)obstables to crouch 
+3)courch reduces line of sight
+4)world would haves hidden ballz
+
+#######Wrold_Bulding######## IShrak
+1)level design
+2)obj design
+3)level jump
+4)
+
+
+
+
+
+
+
+
+
+
