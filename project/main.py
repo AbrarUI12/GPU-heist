@@ -8,6 +8,10 @@ from classes import Player, player
 from camera import setupCamera
 from draw_world import *
 from player_movement import *
+from jump import start_jump, update_jump
+from obstacles import drawObstacles
+
+
 
 # ---------------- Window / world settings ----------------
 WIN_W, WIN_H = 1024, 720
@@ -102,6 +106,7 @@ def on_display():
     elif game_state == PLAYING:
         setupCamera()
         drawGrid(ARENA_HALF, GRID_STEP)
+        drawObstacles()   
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
@@ -157,7 +162,12 @@ def on_keyboard(key, x, y):
     except:
         return
     pressed_keys[ch] = True
-
+    
+    # Jump on spacebar
+    if ch == ' ':
+       start_jump()
+    
+    
 def on_keyboard_up(key, x, y):
     try:
         ch = key.decode('utf-8').lower()
@@ -194,7 +204,11 @@ def update():
     if pressed_keys.get('d', False):
         strafePlayer(-1, dt, speed)
 
+    # Update jump
+    update_jump(player, dt)
+
     glutPostRedisplay()
+
 
 # ---------------- Main ----------------
 def main():
