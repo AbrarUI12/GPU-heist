@@ -129,7 +129,7 @@ def Ishrak_model(lying=False):
     if lying:
         glRotatef(-90.0, 1, 0, 0)
 
-    leg_length = 1.55
+    leg_length = 1.66
     body_height = 1.6
     body_y_offset = leg_length  # move body above legs
 
