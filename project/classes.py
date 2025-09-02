@@ -12,3 +12,10 @@ class Player:
         self.balls=0
         self.health=10
 player = Player()
+
+class Enemy:
+    def __init__(self):
+        self.pos = [10.0, PLAYER_Y, 10.0]
+        self.angDeg = 0.0
+        self.scale = 1.0   
+        self.health=2

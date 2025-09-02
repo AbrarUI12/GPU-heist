@@ -152,12 +152,15 @@ def on_keyboard(key, x, y):
     if game_state == MENU:
         if key == b'1':
             selected_model = "Abrar"
+            player.balls = 2
             game_state = PLAYING
         elif key == b'2':
             selected_model = "Sanjoy"
+            player.balls = 6
             game_state = PLAYING
         elif key == b'3':
             selected_model = "Ishrak"
+            player.balls = 2
             game_state = PLAYING
         glutPostRedisplay()
         return
@@ -208,6 +211,7 @@ def update():
         return
 
     speed = 8.0 if selected_model == "Abrar" else 4.0
+    
     dt = 0.016  # fixed timestep ~60FPS
 
     if pressed_keys.get('w', False):
@@ -221,6 +225,7 @@ def update():
 
     # Update jump
     update_jump(player, dt)
+    
     
     balls.check_collection(player)
 
