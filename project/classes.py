@@ -8,4 +8,6 @@ class Player:
         self.pos = [0.0, PLAYER_Y, 0.0]
         self.angDeg = 0.0
         self.lying = False
+        self.scale = 1.0   
+        self.balls=0
 player = Player()

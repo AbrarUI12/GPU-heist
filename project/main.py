@@ -10,6 +10,9 @@ from draw_world import *
 from player_movement import *
 from jump import start_jump, update_jump
 from obstacles import drawObstacles
+import crouch
+from jump import start_jump
+
 
 
 
@@ -110,6 +113,7 @@ def on_display():
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
+        glScalef(player.scale, player.scale, player.scale)  # apply crouch/stand scale
         if selected_model == "Abrar":
             Abrar_model(player.lying)
         elif selected_model == "Sanjoy":
@@ -164,8 +168,14 @@ def on_keyboard(key, x, y):
     pressed_keys[ch] = True
     
     # Jump on spacebar
-    if ch == ' ':
+    # Jump on spacebar
+    if ch == ' ' and not crouch.is_crouching:   # 🚫 cannot jump while crouching
        start_jump()
+
+    # Crouch with "c"
+    if ch == 'c':
+        crouch.toggle_crouch(player)
+
     
     
 def on_keyboard_up(key, x, y):
@@ -173,7 +183,10 @@ def on_keyboard_up(key, x, y):
         ch = key.decode('utf-8').lower()
     except:
         return
+
     pressed_keys[ch] = False
+
+
 
 # ---------------- Mouse ----------------
 def on_mouse_motion(x, y):
