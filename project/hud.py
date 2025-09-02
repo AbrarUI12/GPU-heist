@@ -2,6 +2,7 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import GLUT_BITMAP_HELVETICA_18, glutBitmapCharacter
+import main
 
 # Window size (update if your main window changes)
 WIN_W = 1024
@@ -14,7 +15,7 @@ def draw_text(x, y, text):
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(c))
 
 
-def draw_hud(player, health):
+def draw_hud(player, health,selected_model):
     """
     Draw player's health as a red bar and ball count as number.
     player: Player object
@@ -35,7 +36,10 @@ def draw_hud(player, health):
     glLoadIdentity()
 
     # --- Draw Health Bar ---
-    bar_width = 200
+    if selected_model == "Ishrak":
+        bar_width = 300
+    else:
+        bar_width = 200
     bar_height = 25
     margin = 20
 
@@ -49,7 +53,8 @@ def draw_hud(player, health):
     glEnd()
 
     # Health fill (red)
-    health_width = (health / 100.0) * bar_width
+    full_health=health
+    health_width = (health / full_health) * bar_width
     glColor3f(1.0, 0.0, 0.0)
     glBegin(GL_QUADS)
     glVertex2f(margin, WIN_H - margin - bar_height)

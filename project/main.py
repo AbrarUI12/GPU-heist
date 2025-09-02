@@ -15,6 +15,7 @@ from jump import start_jump
 import balls
 import hud
 import enemy
+import throw_ball
 
 
 
@@ -115,7 +116,7 @@ def on_display():
         drawGrid(ARENA_HALF, GRID_STEP)
         drawObstacles()  
         balls.draw_balls() 
-        hud.draw_hud(player, player.health)
+        throw_ball.draw_balls()
         enemy.draw_enemies()
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
@@ -128,6 +129,7 @@ def on_display():
         elif selected_model == "Ishrak":
             Ishrak_model(player.lying)
         glPopMatrix()
+        hud.draw_hud(player, player.health,selected_model)
     glutSwapBuffers()
 
 def on_reshape(w, h):
@@ -213,6 +215,14 @@ def on_mouse_motion(x, y):
     lastMouseX = x
     glutPostRedisplay()
 
+def on_mouse_click(button, state, x, y):
+    if button == GLUT_LEFT_BUTTON and state == GLUT_DOWN:
+        import throw_ball
+        throw_ball.throw_ball()
+
+
+
+
 # ---------------- Update (per-frame) ----------------
 def update():
     if game_state != PLAYING:
@@ -236,10 +246,10 @@ def update():
     
     
     balls.check_collection(player)
-    print(player.health)
     # player.health = max(player.health - 1, 0)  # example damage
 
     enemy.update_enemies(0.016)
+    throw_ball.update_balls(dt)
 
     glutPostRedisplay()
 
@@ -257,7 +267,8 @@ def main():
     glutKeyboardFunc(on_keyboard)
     glutKeyboardUpFunc(on_keyboard_up)
     glutPassiveMotionFunc(on_mouse_motion)
-    glutIdleFunc(update)  # continuous update
+    glutIdleFunc(update)# continuous update
+    glutMouseFunc(on_mouse_click) 
     glutMainLoop()
 
 if __name__ == "__main__":
