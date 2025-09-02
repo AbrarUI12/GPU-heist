@@ -2,16 +2,24 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-from model import Abrar_model  # you can change to an enemy model if needed
+from model import draw_security_guard  # you can change to an enemy model if needed
 from classes import Enemy
+import random
 
 # List to hold all enemies
 enemies = []
 
 # Example: spawn one enemy at a fixed location
-def spawn_enemy(x=10.0, y=0.75, z=10.0, health=2):
+def spawn_enemy(x=None, y=0.75, z=None, health=2):
     enemy = Enemy()
+
+    if x is None:
+        x = random.uniform(-20.0, 20.0)  # random X
+    if z is None:
+        z = random.uniform(-20.0, 20.0)  # random Z
+
     enemy.pos = [x, y, z]
+    print(enemy.pos)
     enemy.health = health
     enemies.append(enemy)
     return enemy
@@ -23,8 +31,8 @@ def draw_enemies():
         glTranslatef(enemy.pos[0], enemy.pos[1], enemy.pos[2])
         glRotatef(enemy.angDeg, 0, 1, 0)
         glScalef(enemy.scale, enemy.scale, enemy.scale)
-        # Use Abrar_model or any enemy model
-        Abrar_model(False)
+        
+        draw_security_guard()
         glPopMatrix()
 
 # Optional: update enemies (movement, AI, etc.)
@@ -33,3 +41,5 @@ def update_enemies(dt):
         # Example: rotate slowly
         enemy.angDeg += 20.0 * dt
         enemy.angDeg %= 360
+        if enemy.health <= 0:
+            enemies.remove(enemy)

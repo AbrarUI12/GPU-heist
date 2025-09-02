@@ -9,7 +9,7 @@ import enemy  # your enemy module
 # Constants
 BALL_SPEED = 15.0       # units per second
 BALL_LIFETIME = 3.0     # seconds before disappearing
-BALL_RADIUS = 0.2       # visual radius
+BALL_RADIUS = 0.5       # visual radius
 THROW_HEIGHT = 0.8      # height from player's position
 
 # Active thrown balls
@@ -55,15 +55,23 @@ def update_balls(dt):
             continue
 
         # Check collision with enemies
-        for e in enemy.enemies:  # enemies list in enemy.py
+        for e in enemy.enemies:
             dx = ball_obj.pos[0] - e.pos[0]
             dy = ball_obj.pos[1] - e.pos[1]
             dz = ball_obj.pos[2] - e.pos[2]
             dist = math.sqrt(dx*dx + dy*dy + dz*dz)
-            if dist < BALL_RADIUS + 0.5:  # assuming enemy radius ~0.5
+
+            enemy_hit_radius = 0.5 * e.scale  # scale-based hitbox
+            if dist < BALL_RADIUS + enemy_hit_radius:
                 e.health -= 1
+                print(f"Enemy hit! Health now {e.health}")
                 ball_obj.active = False
+
+                # Remove enemy if health <= 0
+                if e.health <= 0:
+                    enemy.enemies.remove(e)
                 break
+
 
 def draw_balls():
     """Render all active thrown balls."""

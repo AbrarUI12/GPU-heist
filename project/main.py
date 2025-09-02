@@ -47,7 +47,7 @@ lastMouseX = None
 sensitivity = 0.3
 
 
-enemy.spawn_enemy(10.0, 0.75, 10.0)
+enemy.spawn_enemy()
 # ---------------- Menu / display ----------------
 def draw_menu():
     glDisable(GL_DEPTH_TEST)
