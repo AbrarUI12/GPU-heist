@@ -13,7 +13,8 @@ from obstacles import drawObstacles
 import crouch
 from jump import start_jump
 import balls
-
+import hud
+import enemy
 
 
 
@@ -44,6 +45,8 @@ pressed_keys = {}  # key -> True if pressed
 lastMouseX = None
 sensitivity = 0.3
 
+
+enemy.spawn_enemy(10.0, 0.75, 10.0)
 # ---------------- Menu / display ----------------
 def draw_menu():
     glDisable(GL_DEPTH_TEST)
@@ -112,6 +115,8 @@ def on_display():
         drawGrid(ARENA_HALF, GRID_STEP)
         drawObstacles()  
         balls.draw_balls() 
+        hud.draw_hud(player, player.health)
+        enemy.draw_enemies()
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
@@ -153,14 +158,17 @@ def on_keyboard(key, x, y):
         if key == b'1':
             selected_model = "Abrar"
             player.balls = 2
+            player.health = 10
             game_state = PLAYING
         elif key == b'2':
             selected_model = "Sanjoy"
             player.balls = 6
+            player.health = 10
             game_state = PLAYING
         elif key == b'3':
             selected_model = "Ishrak"
             player.balls = 2
+            player.health = 20
             game_state = PLAYING
         glutPostRedisplay()
         return
@@ -228,6 +236,10 @@ def update():
     
     
     balls.check_collection(player)
+    print(player.health)
+    # player.health = max(player.health - 1, 0)  # example damage
+
+    enemy.update_enemies(0.016)
 
     glutPostRedisplay()
 
