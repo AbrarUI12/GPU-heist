@@ -4,7 +4,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLUT import GLUT_BITMAP_HELVETICA_18
 import math, random, sys, time
 PI = math.pi
-ARENA_HALF = 25.0
+ARENA_HALF = 100
 
 
 

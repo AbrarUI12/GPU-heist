@@ -4,18 +4,24 @@ from OpenGL.GLUT import *
 import math, time
 from helper_fun import *
 from model import *
-from classes import Player,player
+from classes import Player, player
 from camera import setupCamera
 from draw_world import *
 from player_movement import *
+from jump import start_jump, update_jump
+from obstacles import drawObstacles
+import crouch
+from jump import start_jump
+import balls
 
-# Window and world settings
+
+
+
+# ---------------- Window / world settings ----------------
 WIN_W, WIN_H = 1024, 720
-ARENA_HALF = 100
 GRID_STEP = 5.0
 CAMERA_DIST = 10.0
 PLAYER_Y = 0.75
-MOVE_SPEED = 4.0
 
 # Camera settings
 firstPerson = False
@@ -32,10 +38,14 @@ game_state = MENU
 # Selected model
 selected_model = None
 
+# ---------------- Input ----------------
+pressed_keys = {}  # key -> True if pressed
 
+lastMouseX = None
+sensitivity = 0.3
 
+# ---------------- Menu / display ----------------
 def draw_menu():
-    # --- Draw background and initial text in 2D ---
     glDisable(GL_DEPTH_TEST)
     glDisable(GL_LIGHTING)
 
@@ -48,7 +58,6 @@ def draw_menu():
     glPushMatrix()
     glLoadIdentity()
 
-    # Background
     glColor3f(0.1, 0.1, 0.15)
     glBegin(GL_QUADS)
     glVertex2f(0, 0)
@@ -57,7 +66,6 @@ def draw_menu():
     glVertex2f(0, WIN_H)
     glEnd()
 
-    # Main menu text
     glColor3f(1.0, 1.0, 1.0)
     def draw_text(x, y, text):
         glRasterPos2f(x, y)
@@ -65,78 +73,49 @@ def draw_menu():
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c)
 
     draw_text(WIN_W*0.35, WIN_H*0.8, "Select Your Character:")
-    draw_text(WIN_W*0.35, WIN_H*0.2, "Press 1 for Abrar\n 2 for Sanjoy\n 3 for Ishrak")
+    draw_text(WIN_W*0.35, WIN_H*0.2, "Press 1 for Abrar | 2 for Sanjoy | 3 for Ishrak")
 
     glPopMatrix()
     glMatrixMode(GL_PROJECTION)
     glPopMatrix()
     glMatrixMode(GL_MODELVIEW)
 
-    # --- Draw 3D character models ---
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_LIGHTING)
 
-    # Abrar
+    # Draw 3D models
     glPushMatrix()
     glTranslatef(-2.0, -1.5, -8.0)
     glRotatef(30, 0, 1, 0)
     Abrar_model()
     glPopMatrix()
 
-    # Sanjoy
     glPushMatrix()
     glTranslatef(0.0, -1.5, -8.0)
     glRotatef(-30, 0, 1, 0)
     Sanjoy_model()
     glPopMatrix()
     
-    #ishrak
     glPushMatrix()
     glTranslatef(2.0,-1.5, -8.0)
     glRotatef(-30, 0, 1, 0)
     Ishrak_model()
     glPopMatrix()
 
-    # --- Draw labels for models in 2D again ---
-    glDisable(GL_DEPTH_TEST)
-    glDisable(GL_LIGHTING)
-
-    glMatrixMode(GL_PROJECTION)
-    glPushMatrix()
-    glLoadIdentity()
-    gluOrtho2D(0, WIN_W, 0, WIN_H)
-    glMatrixMode(GL_MODELVIEW)
-    glPushMatrix()
-    glLoadIdentity()
-
-    # Draw model names
-    glColor3f(1.0, 1.0, 1.0)
-    draw_text(WIN_W*0.35, WIN_H*0.75, "Abrar")
-    draw_text(WIN_W*0.65, WIN_H*0.75, "Ishrak")
-    draw_text(WIN_W*0.50, WIN_H*0.75, "Sanjoy")
-    
-    glPopMatrix()
-    glMatrixMode(GL_PROJECTION)
-    glPopMatrix()
-    glMatrixMode(GL_MODELVIEW)
-
-    glEnable(GL_DEPTH_TEST)
-    glEnable(GL_LIGHTING)
-
-
-
-# Display
+# ---------------- Display / reshape ----------------
 def on_display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     if game_state == MENU:
-       pass
-       draw_menu()
+        draw_menu()
     elif game_state == PLAYING:
         setupCamera()
         drawGrid(ARENA_HALF, GRID_STEP)
+        drawObstacles()  
+        balls.draw_balls() 
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
+        glScalef(player.scale, player.scale, player.scale)  # apply crouch/stand scale
         if selected_model == "Abrar":
             Abrar_model(player.lying)
         elif selected_model == "Sanjoy":
@@ -166,14 +145,10 @@ def init_gl():
     glEnable(GL_COLOR_MATERIAL)
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE)
 
-# Keyboard movement
-last_time = time.time()
+# ---------------- Keyboard ----------------
 def on_keyboard(key, x, y):
-    global last_time,selected_model,game_state
-    current_time = time.time()
-    dt = current_time - last_time
-    last_time = current_time
-    
+    global selected_model, game_state
+    # Menu selection
     if game_state == MENU:
         if key == b'1':
             selected_model = "Abrar"
@@ -187,51 +162,86 @@ def on_keyboard(key, x, y):
         glutPostRedisplay()
         return
 
+    # Add key to pressed_keys
+    try:
+        ch = key.decode('utf-8').lower()
+    except:
+        return
+    pressed_keys[ch] = True
+    
+    # Jump on spacebar
+    # Jump on spacebar
+    if ch == ' ' and not crouch.is_crouching:   # 🚫 cannot jump while crouching
+       start_jump()
 
-    key = key.decode('utf-8')
-    if key == 'w':  # Forward
-        movePlayer(1, dt)
-    elif key == 's':  # Backward
-        movePlayer(-1, dt)
-    elif key == 'd':  # Strafe right
-        strafePlayer(-1, dt)
-    elif key == 'a':  # Strafe left
-        strafePlayer(1, dt)
+    # Crouch with "c"
+    if ch == 'c':
+        crouch.toggle_crouch(player)
 
-    glutPostRedisplay()
+    
+    
+def on_keyboard_up(key, x, y):
+    try:
+        ch = key.decode('utf-8').lower()
+    except:
+        return
 
-####mouse movemnt
-# Track last mouse position
-lastMouseX = None
-sensitivity = 0.3  # adjust for faster/slower rotation
+    pressed_keys[ch] = False
 
+
+
+# ---------------- Mouse ----------------
 def on_mouse_motion(x, y):
     global lastMouseX
     if lastMouseX is None:
         lastMouseX = x
         return
-
-    # Invert deltaX to correct rotation direction
-    deltaX = lastMouseX - x  # <-- inversion here
+    deltaX = lastMouseX - x
     player.angDeg += deltaX * sensitivity
-    player.angDeg %= 360  # wrap angle between 0–360
-
+    player.angDeg %= 360
     lastMouseX = x
     glutPostRedisplay()
 
+# ---------------- Update (per-frame) ----------------
+def update():
+    if game_state != PLAYING:
+        return
+
+    speed = 8.0 if selected_model == "Abrar" else 4.0
+    dt = 0.016  # fixed timestep ~60FPS
+
+    if pressed_keys.get('w', False):
+        movePlayer(1, dt, speed)
+    if pressed_keys.get('s', False):
+        movePlayer(-1, dt, speed)
+    if pressed_keys.get('a', False):
+        strafePlayer(1, dt, speed)
+    if pressed_keys.get('d', False):
+        strafePlayer(-1, dt, speed)
+
+    # Update jump
+    update_jump(player, dt)
+    
+    balls.check_collection(player)
+
+    glutPostRedisplay()
 
 
-
+# ---------------- Main ----------------
 def main():
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
     glutInitWindowSize(WIN_W, WIN_H)
     glutCreateWindow(b"Simple WASD Movement Example")
     init_gl()
+    balls.spawn_balls()
     glutDisplayFunc(on_display)
     glutReshapeFunc(on_reshape)
     glutKeyboardFunc(on_keyboard)
+    glutKeyboardUpFunc(on_keyboard_up)
     glutPassiveMotionFunc(on_mouse_motion)
+    glutIdleFunc(update)  # continuous update
     glutMainLoop()
+
 if __name__ == "__main__":
     main()

@@ -6,7 +6,7 @@
 6)game logic
 #############################
 
-###########enemy#############
+###########enemy############# deepto
 1) line of sight e thakle dekbe
 2) collision detection
 3)variations
@@ -18,11 +18,8 @@
 3)health bar
 4)stun timer
 
-###########Charecter##############
-1)3 char
-2)heakth
-3) special powers
-4)ballz
+...2)heakth  baki
+
 
 
 ##############gamelogic#########  abrar
@@ -37,6 +34,7 @@
 3)level jump
 4)
 
+ special powers IShrak
 
 
 
