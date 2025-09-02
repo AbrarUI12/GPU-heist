@@ -13,7 +13,7 @@ from obstacles import drawObstacles
 import crouch
 from jump import start_jump
 import balls
-
+import boss
 
 
 
@@ -112,6 +112,8 @@ def on_display():
         drawGrid(ARENA_HALF, GRID_STEP)
         drawObstacles()  
         balls.draw_balls() 
+        boss.draw_boss()
+
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
@@ -218,6 +220,7 @@ def update():
         strafePlayer(1, dt, speed)
     if pressed_keys.get('d', False):
         strafePlayer(-1, dt, speed)
+    boss.update_boss()
 
     # Update jump
     update_jump(player, dt)
@@ -235,6 +238,7 @@ def main():
     glutCreateWindow(b"Simple WASD Movement Example")
     init_gl()
     balls.spawn_balls()
+    boss.spawn_boss()
     glutDisplayFunc(on_display)
     glutReshapeFunc(on_reshape)
     glutKeyboardFunc(on_keyboard)
