@@ -10,4 +10,5 @@ class Player:
         self.lying = False
         self.scale = 1.0   
         self.balls=0
+        self.health=10
 player = Player()

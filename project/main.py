@@ -12,6 +12,7 @@ from jump import start_jump, update_jump
 from obstacles import drawObstacles
 import crouch
 from jump import start_jump
+import balls
 
 
 
@@ -109,7 +110,8 @@ def on_display():
     elif game_state == PLAYING:
         setupCamera()
         drawGrid(ARENA_HALF, GRID_STEP)
-        drawObstacles()   
+        drawObstacles()  
+        balls.draw_balls() 
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
@@ -219,6 +221,8 @@ def update():
 
     # Update jump
     update_jump(player, dt)
+    
+    balls.check_collection(player)
 
     glutPostRedisplay()
 
@@ -230,6 +234,7 @@ def main():
     glutInitWindowSize(WIN_W, WIN_H)
     glutCreateWindow(b"Simple WASD Movement Example")
     init_gl()
+    balls.spawn_balls()
     glutDisplayFunc(on_display)
     glutReshapeFunc(on_reshape)
     glutKeyboardFunc(on_keyboard)
