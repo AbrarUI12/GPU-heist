@@ -21,7 +21,8 @@ def spawn_enemy(x=None, y=.75, z=None, health=2):
     enemy.health = health
 
     # 🔥 Assign a random type ONCE
-    enemy.model_type = random.choice(["guard", "male_teacher", "female_teacher"])
+    # enemy.model_type = random.choice(["guard", "male_teacher", "female_teacher"])
+    enemy.model_type='1'
 
     print(f"Spawned enemy at {enemy.pos} with type {enemy.model_type}")
     enemies.append(enemy)
@@ -41,7 +42,8 @@ def draw_enemies():
         elif enemy.model_type == "male_teacher":
             draw_male_teacher()
         else:
-            draw_female_teacher()
+            # draw_female_teacher()
+            Sru_model()
 
         glPopMatrix()
 

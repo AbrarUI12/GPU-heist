@@ -344,3 +344,89 @@ def draw_female_teacher():
     glPopMatrix()
 
     glPopMatrix()
+
+
+def Sru_model(lying=False):
+    glPushMatrix()
+
+    if lying:
+        glRotatef(-90.0, 1, 0, 0)
+
+    leg_length = 1.66
+    body_height = 1.6
+    body_y_offset = leg_length  # move body above legs
+
+    # --- Body (suit jacket, black) ---
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset, 0.0)
+    glColor3f(0.0, 0.0, 0.0)  # Black suit
+    drawCuboid(1.2, body_height, 0.6)
+    glPopMatrix()
+
+    # --- Shirt (white, slightly inset on chest) ---
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 0.05, 0.31)  # in front
+    glColor3f(1.0, 1.0, 1.0)  # White shirt
+    drawCuboid(0.6, body_height - 0.2, 0.05)
+    glPopMatrix()
+
+    # --- Right arm (black suit) ---
+    glPushMatrix()
+    glTranslatef(0.65, body_y_offset + 0.2, 0.0)
+    glColor3f(0.0, 0.0, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+
+    # --- Left arm (black suit) ---
+    glPushMatrix()
+    glTranslatef(-0.65, body_y_offset + 0.2, 0.0)
+    glColor3f(0.0, 0.0, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+
+    # --- Head ---
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.1, 0.0)
+    glColor3f(0.9, 0.8, 0.7)  # Skin tone
+    drawSphere(0.35)
+    glPopMatrix()
+
+    # --- Luffy Hat ---
+    # Hat brim
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.25, 0.0)
+    glScalef(1.3, 0.1, 1.3)
+    glColor3f(0.9, 0.8, 0.4)  # Straw yellow
+    drawSphere(0.4)
+    glPopMatrix()
+
+    # Hat dome
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.35, 0.0)
+    glColor3f(0.9, 0.8, 0.4)
+    drawSphere(0.38)
+    glPopMatrix()
+
+    # Hat red band
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.28, 0.0)
+    glScalef(1.0, 0.3, 1.0)
+    glColor3f(1.0, 0.0, 0.0)  # Red band
+    drawSphere(0.36)
+    glPopMatrix()
+
+    # --- Left leg (black suit pants) ---
+    glPushMatrix()
+    glTranslatef(-0.3, leg_length / 2, 0.0)
+    glColor3f(0.0, 0.0, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
+    glPopMatrix()
+
+    # --- Right leg (black suit pants) ---
+    glPushMatrix()
+    glTranslatef(0.3, leg_length / 2, 0.0)
+    glColor3f(0.0, 0.0, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
+    glPopMatrix()
+
+    glPopMatrix()
