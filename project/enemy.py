@@ -38,7 +38,7 @@ def draw_enemies():
 # Optional: update enemies (movement, AI, etc.)
 def update_enemies(dt):
     for enemy in enemies:
-        # Example: rotate slowly
+        #Example: rotate slowly
         enemy.angDeg += 20.0 * dt
         enemy.angDeg %= 360
         if enemy.health <= 0:
