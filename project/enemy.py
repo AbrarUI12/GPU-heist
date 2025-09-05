@@ -1,8 +1,7 @@
-# enemy.py
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
-from model import draw_security_guard  # you can change to an enemy model if needed
+from model import *  
 from classes import Enemy
 import random
 
@@ -10,7 +9,7 @@ import random
 enemies = []
 
 # Example: spawn one enemy at a fixed location
-def spawn_enemy(x=None, y=0.75, z=None, health=2):
+def spawn_enemy(x=None, y=.75, z=None, health=2):
     enemy = Enemy()
 
     if x is None:
@@ -19,8 +18,12 @@ def spawn_enemy(x=None, y=0.75, z=None, health=2):
         z = random.uniform(-20.0, 20.0)  # random Z
 
     enemy.pos = [x, y, z]
-    print(enemy.pos)
     enemy.health = health
+
+    # 🔥 Assign a random type ONCE
+    enemy.model_type = random.choice(["guard", "male_teacher", "female_teacher"])
+
+    print(f"Spawned enemy at {enemy.pos} with type {enemy.model_type}")
     enemies.append(enemy)
     return enemy
 
@@ -31,8 +34,15 @@ def draw_enemies():
         glTranslatef(enemy.pos[0], enemy.pos[1], enemy.pos[2])
         glRotatef(enemy.angDeg, 0, 1, 0)
         glScalef(enemy.scale, enemy.scale, enemy.scale)
-        
-        draw_security_guard()
+
+        # 🔥 Stick to their assigned model_type
+        if enemy.model_type == "guard":
+            draw_security_guard()
+        elif enemy.model_type == "male_teacher":
+            draw_male_teacher()
+        else:
+            draw_female_teacher()
+
         glPopMatrix()
 
 # Optional: update enemies (movement, AI, etc.)

@@ -177,69 +177,170 @@ def Ishrak_model(lying=False):
 
     glPopMatrix()
 
+
+
+
+# ---------- SECURITY GUARD ----------
 def draw_security_guard():
     glPushMatrix()
 
-    # Make the whole guard bigger (scale factor = 2.0)
-    glScalef(1.5, 1.5, 1.5)
+    leg_length = 1.5
+    body_height = 1.5
+    body_y_offset = leg_length
 
-    # --- Body ---
+    # Body
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset, 0.0)
+    glColor3f(1.0, 0.5, 0.0)
+    drawCuboid(1.0, body_height, 0.6)
+    glPopMatrix()
+
+    # Arms
     glColor3f(1.0, 0.5, 0.0)
     glPushMatrix()
-    glScalef(1.0, 1.5, 0.5)
-    glutSolidCube(1.0)
+    glTranslatef(0.65, body_y_offset + 0.2, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+    glPushMatrix()
+    glTranslatef(-0.65, body_y_offset + 0.2, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
     glPopMatrix()
 
-    # --- Badge ---
-    glColor3f(1.0, 1.0, 0.0)  # yellow
+    # Head
     glPushMatrix()
-    glTranslatef(0.35, 0.3, 0.26)
-    glutSolidSphere(0.1, 12, 12)
+    glTranslatef(0.0, body_y_offset + 1.1, 0.0)
+    glColor3f(0.9, 0.8, 0.7)
+    drawSphere(0.35)
     glPopMatrix()
 
-    # --- Head ---
-    glColor3f(1.0, 0.8, 0.6)  # skin tone
-    glPushMatrix()
-    glTranslatef(0.0, 1.25, 0.0)
-    glutSolidSphere(0.45, 20, 20)
-    glPopMatrix()
-
-    # --- Hat ---
-    glColor3f(0.0, 0.0, 0.0)  # black cap
-    glPushMatrix()
-    glTranslatef(0.0, 1.55, 0.0)
-    glScalef(1.2, 0.4, 1.2)
-    glutSolidCube(0.5)
-    glPopMatrix()
-
-    # --- Arms ---
-    glColor3f(1.0, 0.5, 0.0)
-    # Left arm
-    glPushMatrix()
-    glTranslatef(-0.9, 0.5, 0.0)
-    glScalef(0.3, 1.0, 0.3)
-    glutSolidCube(1.0)
-    glPopMatrix()
-    # Right arm
-    glPushMatrix()
-    glTranslatef(0.9, 0.5, 0.0)
-    glScalef(0.3, 1.0, 0.3)
-    glutSolidCube(1.0)
-    glPopMatrix()
-
-    # --- Legs (black pants) ---
+    # Legs
     glColor3f(0.0, 0.0, 0.0)
-    # Left leg
     glPushMatrix()
-    glTranslatef(-0.35, -1.0, 0.0)
-    glScalef(0.4, 1.0, 0.4)
-    glutSolidCube(1.0)
+    glTranslatef(-0.3, leg_length/2, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
     glPopMatrix()
-    # Right leg
     glPushMatrix()
-    glTranslatef(0.35, -1.0, 0.0)
-    glScalef(0.4, 1.0, 0.4)
-    glutSolidCube(1.0)
+    glTranslatef(0.3, leg_length/2, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
+    glPopMatrix()
+
+    # Hat / Badge (optional)
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.45, 0.0)
+    glColor3f(0.0, 0.0, 0.0)
+    drawCuboid(0.5, 0.2, 0.5)
+    glPopMatrix()
+
+    glPopMatrix()
+
+
+# ---------- MALE TEACHER ----------
+def draw_male_teacher():
+    glPushMatrix()
+
+    leg_length = 1.5
+    body_height = 1.5
+    body_y_offset = leg_length
+
+    # Body
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset, 0.0)
+    glColor3f(1.0, 1.0, 1.0)
+    drawCuboid(1.0, body_height, 0.6)
+    glPopMatrix()
+
+    # Arms
+    glColor3f(0.9, 0.7, 0.5)
+    glPushMatrix()
+    glTranslatef(0.65, body_y_offset + 0.2, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+    glPushMatrix()
+    glTranslatef(-0.65, body_y_offset + 0.2, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+
+    # Head
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.1, 0.0)
+    glColor3f(0.9, 0.8, 0.7)
+    drawSphere(0.35)
+    glPopMatrix()
+
+    # Glasses
+    glColor3f(0.0, 0.0, 0.0)
+    glPushMatrix()
+    glTranslatef(0.25, body_y_offset + 1.1, 0.35)
+    drawSphere(0.15)
+    glPopMatrix()
+    glPushMatrix()
+    glTranslatef(-0.25, body_y_offset + 1.1, 0.35)
+    drawSphere(0.15)
+    glPopMatrix()
+
+    # Legs
+    glColor3f(0.0, 0.0, 0.0)
+    glPushMatrix()
+    glTranslatef(-0.3, leg_length/2, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
+    glPopMatrix()
+    glPushMatrix()
+    glTranslatef(0.3, leg_length/2, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
+    glPopMatrix()
+
+    glPopMatrix()
+
+
+# ---------- FEMALE TEACHER ----------
+def draw_female_teacher():
+    glPushMatrix()
+
+    leg_length = 1.5
+    body_height = 1.5
+    body_y_offset = leg_length
+
+    # Body (dress)
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset, 0.0)
+    glColor3f(0.8, 0.1, 0.1)
+    drawCuboid(1.0, body_height * 1.2, 0.6)
+    glPopMatrix()
+
+    # Arms
+    glColor3f(0.9, 0.7, 0.5)
+    glPushMatrix()
+    glTranslatef(0.65, body_y_offset + 0.2, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+    glPushMatrix()
+    glTranslatef(-0.65, body_y_offset + 0.2, 0.0)
+    drawCuboid(0.3, 0.9, 0.3)
+    glPopMatrix()
+
+    # Head
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.2, 0.0)
+    glColor3f(0.9, 0.8, 0.7)
+    drawSphere(0.35)
+    glPopMatrix()
+
+    # Hair bun
+    glPushMatrix()
+    glTranslatef(0.0, body_y_offset + 1.5, -0.1)
+    glColor3f(0.3, 0.1, 0.0)
+    drawSphere(0.25)
+    glPopMatrix()
+
+    # Legs / shoes
+    glColor3f(0.0, 0.0, 0.0)
+    glPushMatrix()
+    glTranslatef(-0.3, leg_length/2, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
+    glPopMatrix()
+    glPushMatrix()
+    glTranslatef(0.3, leg_length/2, 0.0)
+    drawCuboid(0.3, leg_length, 0.3)
     glPopMatrix()
 
     glPopMatrix()
