@@ -17,6 +17,9 @@ import hud
 import enemy
 import throw_ball
 import boss
+import spawn_ammocrate
+
+
 
 # ---------------- Window / world settings ----------------
 WIN_W, WIN_H = 1024, 720
@@ -45,8 +48,11 @@ pressed_keys = {}  # key -> True if pressed
 lastMouseX = None
 sensitivity = 0.3
 
-
-enemy.spawn_enemy()
+#---------------- enemy spawn ----------------
+for i in range(5):  # spawn 5 enemies at start
+    enemy.spawn_enemy()
+    
+    
 # ---------------- Menu / display ----------------
 def draw_menu():
     glDisable(GL_DEPTH_TEST)
@@ -114,6 +120,7 @@ def on_display():
         setupCamera()
         drawGrid(ARENA_HALF, GRID_STEP)
         drawObstacles()  
+        spawn_ammocrate.draw_ammo_crate()
         balls.draw_balls() 
         throw_ball.draw_balls()
         enemy.draw_enemies()
@@ -250,6 +257,8 @@ def update():
 
     enemy.update_enemies(0.016)
     throw_ball.update_balls(dt)
+    spawn_ammocrate.check_crate_collection(player)
+
 
     glutPostRedisplay()
 
@@ -263,6 +272,7 @@ def main():
     init_gl()
     balls.spawn_balls()
     boss.spawn_boss()
+    spawn_ammocrate.spawn_ammo_crate()
     glutDisplayFunc(on_display)
     glutReshapeFunc(on_reshape)
     glutKeyboardFunc(on_keyboard)

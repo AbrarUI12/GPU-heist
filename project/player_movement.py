@@ -1,10 +1,16 @@
 from helper_fun import *
 from classes import player
 from obstacles import checkCollision
+import crouch
+
 
 PLAYER_Y = 0.75
 
 def movePlayer(dirSign, dt, speed):
+    print(crouch.is_crouching)
+    if crouch.is_crouching:
+        speed *= 0.3
+    
     fx, fz = forward_vec(player.angDeg)
     # Predict new horizontal position
     nx = player.pos[0] + dirSign * speed * dt * fx
@@ -18,6 +24,8 @@ def movePlayer(dirSign, dt, speed):
         player.pos[2] = nz
 
 def strafePlayer(dirSign, dt, speed):
+    if crouch.is_crouching:
+        speed *= 0.3
     fx, fz = forward_vec(player.angDeg)
     nx = player.pos[0] + dirSign * speed * dt * fz
     nz = player.pos[2] - dirSign * speed * dt * fx
