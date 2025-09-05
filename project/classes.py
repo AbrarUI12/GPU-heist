@@ -33,3 +33,6 @@ class Enemy:
         # --- Movement wandering ---
         self.move_dir = random.uniform(0, 360)   # current movement direction in degrees
         self.change_dir_timer = random.uniform(2.0, 5.0)  # time left before changing dir
+        self.last_attack_time = 0.0   # track when enemy last damaged the player
+        self.attack_cooldown = 1.0    # seconds between attacks
+

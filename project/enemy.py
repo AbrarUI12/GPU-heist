@@ -4,6 +4,7 @@ from OpenGL.GLUT import *
 from model import *  
 from classes import Enemy
 import random
+import time
 WORLD_HALF = 100.0  # should match your grid/world size
 # List to hold all enemies
 enemies = []
@@ -16,6 +17,23 @@ def draw_circle(radius, segments=40):
         z = radius * math.sin(theta)
         glVertex3f(x, 0.01, z)  # slightly above ground (y=0.01) to prevent z-fighting
     glEnd()
+
+def check_player_collision(enemy, player, damage=5, radius=1.0):
+    """
+    Check if enemy is close enough to damage the player.
+    radius = how close enemy must be to 'touch' player.
+    """
+    dx = enemy.pos[0] - player.pos[0]
+    dz = enemy.pos[2] - player.pos[2]
+    dist = math.sqrt(dx*dx + dz*dz)
+
+    if dist < radius:  # enemy touched player
+        now = time.time()
+        if now - enemy.last_attack_time >= enemy.attack_cooldown:
+            player.health = max(0, player.health - damage)
+            enemy.last_attack_time = now
+            print(f"⚠️ Player hit! Health = {player.health}")
+
 
 def bounce_enemy(enemy, half=WORLD_HALF):
     """Bounce enemy back into the world and turn them around if they hit boundary"""
@@ -157,7 +175,7 @@ def update_enemies(dt):
                 print("Enemy lost player → CLUELESS mode")
 
         elif enemy.state == "clueless":
-            wander(enemy, dt, speed=1.2)
+            wander(enemy, dt, speed=0.8)
             if dist < enemy.awareness_radius:
                 # Player re-enters radius, reset timer
                 enemy.state = "attack"
@@ -168,7 +186,10 @@ def update_enemies(dt):
                     enemy.state = "patrol"
                     enemy.last_player_detect_time = None
                     print("Enemy calmed down → PATROL mode")
+        # --- Bounce at walls ---
         bounce_enemy(enemy)
+        # --- Check collision with player ---
+        check_player_collision(enemy, player, damage=5, radius=1.0)
         # Remove dead enemy
         if enemy.health <= 0:
             enemies.remove(enemy)
