@@ -129,7 +129,7 @@ def Ishrak_model(lying=False):
     if lying:
         glRotatef(-90.0, 1, 0, 0)
 
-    leg_length = 1.55
+    leg_length = 1.66
     body_height = 1.6
     body_y_offset = leg_length  # move body above legs
 
@@ -177,4 +177,69 @@ def Ishrak_model(lying=False):
 
     glPopMatrix()
 
-    
+def draw_security_guard():
+    glPushMatrix()
+
+    # Make the whole guard bigger (scale factor = 2.0)
+    glScalef(1.5, 1.5, 1.5)
+
+    # --- Body ---
+    glColor3f(1.0, 0.5, 0.0)
+    glPushMatrix()
+    glScalef(1.0, 1.5, 0.5)
+    glutSolidCube(1.0)
+    glPopMatrix()
+
+    # --- Badge ---
+    glColor3f(1.0, 1.0, 0.0)  # yellow
+    glPushMatrix()
+    glTranslatef(0.35, 0.3, 0.26)
+    glutSolidSphere(0.1, 12, 12)
+    glPopMatrix()
+
+    # --- Head ---
+    glColor3f(1.0, 0.8, 0.6)  # skin tone
+    glPushMatrix()
+    glTranslatef(0.0, 1.25, 0.0)
+    glutSolidSphere(0.45, 20, 20)
+    glPopMatrix()
+
+    # --- Hat ---
+    glColor3f(0.0, 0.0, 0.0)  # black cap
+    glPushMatrix()
+    glTranslatef(0.0, 1.55, 0.0)
+    glScalef(1.2, 0.4, 1.2)
+    glutSolidCube(0.5)
+    glPopMatrix()
+
+    # --- Arms ---
+    glColor3f(1.0, 0.5, 0.0)
+    # Left arm
+    glPushMatrix()
+    glTranslatef(-0.9, 0.5, 0.0)
+    glScalef(0.3, 1.0, 0.3)
+    glutSolidCube(1.0)
+    glPopMatrix()
+    # Right arm
+    glPushMatrix()
+    glTranslatef(0.9, 0.5, 0.0)
+    glScalef(0.3, 1.0, 0.3)
+    glutSolidCube(1.0)
+    glPopMatrix()
+
+    # --- Legs (black pants) ---
+    glColor3f(0.0, 0.0, 0.0)
+    # Left leg
+    glPushMatrix()
+    glTranslatef(-0.35, -1.0, 0.0)
+    glScalef(0.4, 1.0, 0.4)
+    glutSolidCube(1.0)
+    glPopMatrix()
+    # Right leg
+    glPushMatrix()
+    glTranslatef(0.35, -1.0, 0.0)
+    glScalef(0.4, 1.0, 0.4)
+    glutSolidCube(1.0)
+    glPopMatrix()
+
+    glPopMatrix()

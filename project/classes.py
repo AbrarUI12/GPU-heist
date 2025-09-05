@@ -8,4 +8,16 @@ class Player:
         self.pos = [0.0, PLAYER_Y, 0.0]
         self.angDeg = 0.0
         self.lying = False
+        self.scale = 1.0   
+        self.balls=0
+        self.health=10
+        self.current_floor = 0
+        self.has_gpu = False
 player = Player()
+
+class Enemy:
+    def __init__(self):
+        self.pos = [10.0, PLAYER_Y, 10.0]
+        self.angDeg = 0.0
+        self.scale = 1.0   
+        self.health=2
