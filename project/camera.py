@@ -5,7 +5,7 @@ import math, time
 from helper_fun import *
 from model import *
 from classes import Player,player
-
+import floors
 # camera.py
 import math
 
@@ -29,6 +29,14 @@ def setupCamera():
     targetY = player.pos[1] + height_offset
     targetZ = player.pos[2] - follow_dist * math.cos(ang_rad)
 
+    # Ensure camera doesn't go below current floor
+    current_floor = floors.get_current_floor()
+    floor_y = floors.get_floor_y_offset(current_floor)
+    min_camera_y = floor_y + 2.0  # Minimum camera height above floor
+    
+    if targetY < min_camera_y:
+        targetY = min_camera_y
+
     # Smooth camera movement
     camX += (targetX - camX) * lerp_speed
     camY += (targetY - camY) * lerp_speed
@@ -40,4 +48,3 @@ def setupCamera():
     lookZ = player.pos[2]
 
     gluLookAt(camX, camY, camZ, lookX, lookY, lookZ, 0, 1, 0)
-
