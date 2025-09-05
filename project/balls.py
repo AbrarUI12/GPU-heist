@@ -6,7 +6,7 @@ from OpenGL.GLUT import glutSolidSphere
 
 
 # World bounds (should match your grid/world size)
-WORLD_HALF = 50.0  # example: same as your drawGrid half
+WORLD_HALF = 100.0  # example: same as your drawGrid half
 
 BALL_RADIUS = 0.3   # visual size of ball
 NUM_BALLS = 20      # number of balls in the world
@@ -28,7 +28,7 @@ def spawn_balls(num=NUM_BALLS):
 def draw_balls():
     """Render all uncollected balls."""
     glDisable(GL_LIGHTING)
-    glColor3f(1.0, 0.0, 0.0)  # red balls
+    glColor3f(1.0, 1.0, 0.0)  # yellow balls
     for ball in balls:
         if not ball["collected"]:
             glPushMatrix()
