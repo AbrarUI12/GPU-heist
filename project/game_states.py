@@ -8,6 +8,7 @@ GAME_MISSION_BRIEFING = 1
 GAME_PLAYING = 2
 GAME_MISSION_COMPLETE = 3
 GAME_GAME_OVER = 4
+GAME_VICTORY = 5  # New victory state
 
 # Mission states
 MISSION_ENTER_BUILDING = 0    # Enter through door
@@ -76,15 +77,30 @@ def update_mission_progress():
             current_mission_state = MISSION_EXIT_BUILDING
             
     elif current_mission_state == MISSION_EXIT_BUILDING:
-        # Check if player exited building (implement door exit logic)
-        pass
+        # Check if player with GPU is at the door - this triggers victory
+        if player.has_gpu and check_door_interaction():
+            set_game_state(GAME_VICTORY)
+            print("MISSION ACCOMPLISHED! Player escaped with the GPU!")
 
 def handle_object_collection():
     """Handle collecting the target object"""
     if check_target_object_interaction() and current_mission_state == MISSION_COLLECT_OBJECT:
         player.has_gpu = True
+        print("GPU COLLECTED! Now escape the building!")
         return True
     return False
+
+def handle_door_interaction():
+    """Handle door interaction - exit or victory"""
+    if check_door_interaction():
+        if current_mission_state == MISSION_EXIT_BUILDING and player.has_gpu:
+            # Victory condition met!
+            set_game_state(GAME_VICTORY)
+            return "victory"
+        else:
+            # Regular door interaction (entering building)
+            return "enter"
+    return None
 
 def is_mission_complete():
     """Check if all missions are complete"""
@@ -96,3 +112,26 @@ def reset_mission():
     current_mission_state = MISSION_ENTER_BUILDING
     player.has_gpu = False
     set_current_floor(0)
+
+def reset_game_to_menu():
+    """Reset everything back to character selection"""
+    global current_game_state, current_mission_state
+    
+    # Reset game state
+    current_game_state = GAME_MENU
+    current_mission_state = MISSION_ENTER_BUILDING
+    
+    # Reset player
+    player.pos = [0.0, 0.75, 0.0]
+    player.angDeg = 0.0
+    player.lying = False
+    player.scale = 1.0
+    player.balls = 0
+    player.health = 10
+    player.current_floor = 0
+    player.has_gpu = False
+    
+    # Reset floor
+    set_current_floor(0)
+    
+    print("Game reset to character selection")
