@@ -27,7 +27,7 @@ class Enemy:
         self.state = "patrol"          # can be "patrol", "attack", or "clueless"
         self.awareness_radius = 8.0    # default radius (changes with state/crouch)
         self.state_timer = 0.0         # used in clueless mode to count time
-        self.last_player_detect_time = None  # used to track if player stayed 1s in radius
+        self.player_in_radius_timer = 0.0  # used to track if player stayed 1s in radius
         self.model_type = "guard"      # default; overridden when spawning
 
         # --- Movement wandering ---
