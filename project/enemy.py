@@ -97,7 +97,7 @@ def draw_enemies():
             draw_male_teacher()
         else:
             # draw_female_teacher()
-            draw_female_teacher
+            draw_female_teacher()
 
         glPopMatrix()
 
