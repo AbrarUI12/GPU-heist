@@ -17,10 +17,33 @@ def draw_circle(radius, segments=40):
         glVertex3f(x, 0.01, z)  # slightly above ground (y=0.01) to prevent z-fighting
     glEnd()
 
-def clamp_enemy_position(enemy, half=WORLD_HALF):
-    """Keep enemy inside the square world boundary"""
-    enemy.pos[0] = max(-half, min(half, enemy.pos[0]))
-    enemy.pos[2] = max(-half, min(half, enemy.pos[2]))
+def bounce_enemy(enemy, half=WORLD_HALF):
+    """Bounce enemy back into the world and turn them around if they hit boundary"""
+    bounced = False
+
+    # Check X boundaries
+    if enemy.pos[0] < -half:
+        enemy.pos[0] = -half
+        bounced = True
+    elif enemy.pos[0] > half:
+        enemy.pos[0] = half
+        bounced = True
+
+    # Check Z boundaries
+    if enemy.pos[2] < -half:
+        enemy.pos[2] = -half
+        bounced = True
+    elif enemy.pos[2] > half:
+        enemy.pos[2] = half
+        bounced = True
+
+    # If bounced, turn enemy 180° so they move back in
+    if bounced:
+        # Instead of 180°, pick a new random direction
+        enemy.move_dir = random.uniform(0, 360)
+        enemy.angDeg = enemy.move_dir
+        # Reset timer so they keep this new direction a bit
+        enemy.change_dir_timer = random.uniform(2.0, 5.0)
 
 # Example: spawn one enemy at a fixed location
 def spawn_enemy(x=None, y=.75, z=None, health=2):
@@ -76,12 +99,22 @@ import math, random
 def distance(a, b):
     return math.sqrt((a[0]-b[0])**2 + (a[2]-b[2])**2)
 
-def wander(enemy, dt, speed=1.0):
-    """Move enemy randomly to simulate patrol/clueless wandering"""
-    enemy.angDeg += random.uniform(-20, 20) * dt
-    rad = math.radians(enemy.angDeg)
+def wander(enemy, dt, speed=0.5):
+    """Wander around with random direction changes"""
+    # Countdown until direction change
+    enemy.change_dir_timer -= dt
+    if enemy.change_dir_timer <= 0:
+        # Pick a new random direction
+        enemy.move_dir = random.uniform(0, 360)
+        enemy.change_dir_timer = random.uniform(5.0, 10.0)
+
+    # Move in current direction
+    rad = math.radians(enemy.move_dir)
     enemy.pos[0] += math.cos(rad) * speed * dt
     enemy.pos[2] += math.sin(rad) * speed * dt
+
+    # Face towards move direction
+    enemy.angDeg = enemy.move_dir
 
 def move_towards(enemy, target, dt, speed=2.0):
     """Move enemy towards a target position (attack mode)"""
@@ -105,19 +138,19 @@ def update_enemies(dt):
 
         # ---- STATE MACHINE ----
         if enemy.state == "patrol":
-            wander(enemy, dt, speed=1.0)
+            wander(enemy, dt, speed=0.5)
             if dist < enemy.awareness_radius:
                 # Player must stay for 1s to trigger attack
                 if enemy.last_player_detect_time is None:
                     enemy.last_player_detect_time = time.time()
-                elif time.time() - enemy.last_player_detect_time > 1.0:
+                elif time.time() - enemy.last_player_detect_time > 0.2:
                     enemy.state = "attack"
                     print("Enemy switched to ATTACK mode")
             else:
                 enemy.last_player_detect_time = None
 
         elif enemy.state == "attack":
-            move_towards(enemy, player.pos, dt, speed=3.0)
+            move_towards(enemy, player.pos, dt, speed=1.0)
             if dist > enemy.awareness_radius:
                 enemy.state = "clueless"
                 enemy.state_timer = 0.0
@@ -135,7 +168,7 @@ def update_enemies(dt):
                     enemy.state = "patrol"
                     enemy.last_player_detect_time = None
                     print("Enemy calmed down → PATROL mode")
-        clamp_enemy_position(enemy)
+        bounce_enemy(enemy)
         # Remove dead enemy
         if enemy.health <= 0:
             enemies.remove(enemy)

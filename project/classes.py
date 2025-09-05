@@ -1,4 +1,5 @@
 # Player settings
+import random
 PLAYER_Y = 0.75
 MOVE_SPEED = 10.0
 
@@ -28,3 +29,7 @@ class Enemy:
         self.state_timer = 0.0         # used in clueless mode to count time
         self.last_player_detect_time = None  # used to track if player stayed 1s in radius
         self.model_type = "guard"      # default; overridden when spawning
+
+        # --- Movement wandering ---
+        self.move_dir = random.uniform(0, 360)   # current movement direction in degrees
+        self.change_dir_timer = random.uniform(2.0, 5.0)  # time left before changing dir
