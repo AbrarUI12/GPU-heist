@@ -124,6 +124,7 @@ def on_display():
         balls.draw_balls() 
         throw_ball.draw_balls()
         enemy.draw_enemies()
+        boss.draw_boss()
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
@@ -246,7 +247,7 @@ def update():
         strafePlayer(1, dt, speed)
     if pressed_keys.get('d', False):
         strafePlayer(-1, dt, speed)
-    boss.update_boss()
+    boss.update_boss(dt)
 
     # Update jump
     update_jump(player, dt)
@@ -271,7 +272,6 @@ def main():
     glutCreateWindow(b"Simple WASD Movement Example")
     init_gl()
     balls.spawn_balls()
-    boss.spawn_boss()
     spawn_ammocrate.spawn_ammo_crate()
     glutDisplayFunc(on_display)
     glutReshapeFunc(on_reshape)
