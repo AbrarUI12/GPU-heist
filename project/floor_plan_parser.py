@@ -28,7 +28,7 @@ def parse_floor_matrix(floor_matrix, floor_y_offset):
             if cell_value == 1:  # Wall
                 obstacles.append({
                     "pos": (x, floor_y_offset, z),
-                    "size": (CELL_SIZE, 3.0, CELL_SIZE),  # 5x3x5 wall
+                    "size": (CELL_SIZE, 5.0, CELL_SIZE),  # 5x5x5 wall
                     "type": "wall"
                 })
             

@@ -381,8 +381,7 @@ def update():
         return
 
     speed = 8.0 if selected_model == "Abrar" else 4.0
-    # dt = 0.016  # fixed timestep ~60FPS
-    dt = 0.2
+    dt = 0.1  # fixed timestep ~10FPS
     # Don't allow movement during transitions
     if not floor_transitions.is_transitioning():
         if pressed_keys.get('w', False):
