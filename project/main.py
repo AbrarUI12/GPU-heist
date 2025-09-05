@@ -16,8 +16,7 @@ import balls
 import hud
 import enemy
 import throw_ball
-
-
+import boss
 
 # ---------------- Window / world settings ----------------
 WIN_W, WIN_H = 1024, 720
@@ -240,6 +239,7 @@ def update():
         strafePlayer(1, dt, speed)
     if pressed_keys.get('d', False):
         strafePlayer(-1, dt, speed)
+    boss.update_boss()
 
     # Update jump
     update_jump(player, dt)
@@ -262,6 +262,7 @@ def main():
     glutCreateWindow(b"Simple WASD Movement Example")
     init_gl()
     balls.spawn_balls()
+    boss.spawn_boss()
     glutDisplayFunc(on_display)
     glutReshapeFunc(on_reshape)
     glutKeyboardFunc(on_keyboard)
