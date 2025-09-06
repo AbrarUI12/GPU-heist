@@ -235,7 +235,7 @@ def update():
     if game_state != PLAYING:
         return
 
-    speed = 8.0 if selected_model == "Abrar" else 4.0
+    speed = 6.0 if selected_model == "Abrar" else 4.0
     
     dt = 0.016  # fixed timestep ~60FPS
 

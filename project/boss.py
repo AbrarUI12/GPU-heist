@@ -10,7 +10,7 @@ class Boss:
     def __init__(self):
         self.pos = [0.0, 0.75, -20.0]   # spawn location
         self.health = 50
-        self.speed = 0.002               # slow movement
+        self.speed = 0.02               # slow movement
         self.size = 2.5                 # larger than player
         self.last_shot_time = time.time()
         self.shot_interval = 3.0        # seconds between shots
@@ -23,7 +23,7 @@ class Projectile:
     def __init__(self, start_pos, direction):
         self.pos = start_pos[:]
         self.dir = direction
-        self.speed = 0.008   # slow speed so player can dodge
+        self.speed = 0.08   # slow speed so player can dodge
         self.radius = 0.3
 
     def update(self, dt):
