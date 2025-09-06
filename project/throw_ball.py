@@ -5,6 +5,7 @@ from OpenGL.GLUT import *
 import math
 from classes import player
 import enemy  # your enemy module
+import boss
 
 # Constants
 BALL_SPEED = 15.0       # units per second
@@ -71,7 +72,15 @@ def update_balls(dt):
                 if e.health <= 0:
                     enemy.enemies.remove(e)
                 break
+        #  Check collision with boss
+        dx = ball_obj.pos[0] - boss.boss["pos"][0]
+        dy = ball_obj.pos[1] - boss.boss["pos"][1]
+        dz = ball_obj.pos[2] - boss.boss["pos"][2]
+        dist = math.sqrt(dx*dx + dy*dy + dz*dz)
 
+        if dist < BALL_RADIUS + boss.BOSS_RADIUS:
+            boss.hit_by_player()
+            ball_obj.active = False
 
 def draw_balls():
     """Render all active thrown balls."""

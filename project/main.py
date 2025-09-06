@@ -52,8 +52,8 @@ lastMouseX = None
 sensitivity = 0.3
 
 #---------------- enemy spawn ----------------
-for i in range(5):  # spawn 5 enemies at start
-    enemy.spawn_enemy()
+# for i in range(5):  # spawn 5 enemies at start
+#     enemy.spawn_enemy()
     
     
 # ---------------- Menu / display ----------------
