@@ -7,36 +7,28 @@ from model import Sru_model
 from classes import player
 import enemy
 
-# ---------------- Boss Settings ----------------
-class Boss:
-    def __init__(self):
-        self.pos = [57, 30.8, -2.0]   # spawn location
-        self.health = 50
-        self.speed = 0.02               # slow movement
-        self.size = 2.5                 # larger than player
-        self.last_shot_time = time.time()
-        self.shot_interval = 3.0        # seconds between shots
-        self.projectiles = []           # list of balls shot
 # ---------------- Settings ----------------
 BOSS_RADIUS = 1.5
-BOSS_SPEED = 0.005
-BOSS_STRAFE_SPEED = 0.005
+BOSS_SPEED = 0.4
+BOSS_STRAFE_SPEED = 0.05
 DESIRED_DIST = 18.0   # tries to maintain this distance from player
-SHOOT_DELAY = 2.0     # seconds between shots
-STUN_DURATION = 3.0   # seconds stunned after being hit
-PROJECTILE_SPEED = 10
+SHOOT_DELAY = 1.0     # seconds between shots
+STUN_DURATION = 5.0   # seconds stunned after being hit
+PROJECTILE_SPEED = .5
 PROJECTILE_RADIUS = 0.3
 boss_spawned = False
 
-# ---------------- State ----------------
-boss = {
-    "pos": [57, 30.8, -2.0],
+# ---------------- Initial State ----------------
+BOSS_INIT = {
+    "pos": [57, 30.8, -2.0],   # spawn location (floor 3)
     "health": 100,
     "last_shot": time.time(),
     "stunned_until": 0,
     "strafe_dir": 1,   # +1 right, -1 left
     "hit_count": 0,
 }
+
+boss = dict(BOSS_INIT)  # working copy
 
 # ---------------- Projectile ----------------
 class Projectile:
@@ -45,6 +37,7 @@ class Projectile:
         self.dir = direction
         self.speed = 0.08   # slow speed so player can dodge
         self.radius = 0.3
+
 projectiles = []  # boss bullets
 
 # ---------------- Logic ----------------
@@ -59,7 +52,8 @@ def shoot():
     dy = (player.pos[1] + 0.75) - boss["pos"][1]
     dz = player.pos[2] - boss["pos"][2]
     dist = math.sqrt(dx*dx + dy*dy + dz*dz)
-    if dist == 0: return
+    if dist == 0:
+        return
     dx, dy, dz = dx/dist, dy/dist, dz/dist
 
     projectiles.append({
@@ -69,6 +63,9 @@ def shoot():
 
 
 def update_boss(dt):
+    if not boss_spawned:
+        return  # don't update if despawned
+
     now = time.time()
 
     # ---------------- Stun check ----------------
@@ -111,10 +108,14 @@ def update_boss(dt):
         dz = proj["pos"][2] - player.pos[2]
         if dx*dx + dy*dy + dz*dz < (PROJECTILE_RADIUS + 0.5)**2:
             player.health = max(player.health - 5, 0)
+            print(f"[BOSS ATTACK] Player hit! Health now {player.health}")
             projectiles.remove(proj)
 
 
 def draw_boss():
+    if not boss_spawned:
+        return  # don't draw if despawned
+
     # draw boss
     glPushMatrix()
     glTranslatef(*boss["pos"])
@@ -134,6 +135,9 @@ def draw_boss():
 
 def hit_by_player():
     """Call this when the player's projectile hits the boss"""
+    if not boss_spawned:
+        return
+
     boss["health"] -= 10
     boss["stunned_until"] = time.time() + STUN_DURATION
     boss["hit_count"] += 1
@@ -151,14 +155,10 @@ def hit_by_player():
             enemy.spawn_enemy(x=bx + ox, y=by, z=bz + oz)
 
 
-# boss.py
 def reset_boss():
     """Despawn boss and clear projectiles"""
-    global boss_spawned, projectiles
+    global boss_spawned, projectiles, boss
     boss_spawned = False
     projectiles.clear()
-    boss["pos"] = [-87.5, 0.75, 67.5]  # reset spawn position
-    boss["health"] = 100
-    boss["hit_count"] = 0
-    boss["stunned_until"] = 0
+    boss = dict(BOSS_INIT)  # reset to initial values
     boss["last_shot"] = time.time()

@@ -155,18 +155,18 @@ def on_display():
         
         throw_ball.draw_balls()
             # ✅ Spawn boss only on floor 3
-        if current_floor == 3:
+        if current_floor == 2:
             if not boss.boss_spawned:
                 boss.boss_spawned = True
                 print("[BOSS SPAWNED] The final boss has appeared!")
             boss.update_boss(dt)
+            boss.draw_boss()
         else:
             if boss.boss_spawned:
                 boss.reset_boss()
                 print("[BOSS DESPAWNED] Player left floor 3")
         
         # Draw player
-        boss.draw_boss()
         drawCrosshair()
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
