@@ -12,6 +12,7 @@ class Player:
         self.scale = 1.0   
         self.balls=0
         self.health=10
+        self.max_health = 10
         self.current_floor = 0
         self.has_gpu = False
 player = Player()

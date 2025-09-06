@@ -10,7 +10,7 @@ import enemy
 # ---------------- Boss Settings ----------------
 class Boss:
     def __init__(self):
-        self.pos = [0.0, 0.75, -20.0]   # spawn location
+        self.pos = [57, 30.8, -2.0]   # spawn location
         self.health = 50
         self.speed = 0.02               # slow movement
         self.size = 2.5                 # larger than player
@@ -24,12 +24,13 @@ BOSS_STRAFE_SPEED = 0.005
 DESIRED_DIST = 18.0   # tries to maintain this distance from player
 SHOOT_DELAY = 2.0     # seconds between shots
 STUN_DURATION = 3.0   # seconds stunned after being hit
-PROJECTILE_SPEED = 0.01
+PROJECTILE_SPEED = 10
 PROJECTILE_RADIUS = 0.3
+boss_spawned = False
 
 # ---------------- State ----------------
 boss = {
-    "pos": [0.0, 0.75, -20.0],
+    "pos": [57, 30.8, -2.0],
     "health": 100,
     "last_shot": time.time(),
     "stunned_until": 0,
@@ -79,27 +80,30 @@ def update_boss(dt):
     dz = player.pos[2] - boss["pos"][2]
     dist = math.sqrt(dx*dx + dz*dz)
 
-    # maintain distance from player
-    if dist > DESIRED_DIST + 2:
-        boss["pos"][0] += dx/dist * BOSS_SPEED
-        boss["pos"][2] += dz/dist * BOSS_SPEED
-    elif dist < DESIRED_DIST - 2:
-        boss["pos"][0] -= dx/dist * BOSS_SPEED
-        boss["pos"][2] -= dz/dist * BOSS_SPEED
+    if dist > 0:  # avoid division by zero
+        nx, nz = dx / dist, dz / dist
+
+        # maintain distance from player
+        if dist > DESIRED_DIST + 2:
+            boss["pos"][0] += nx * BOSS_SPEED * dt * 60
+            boss["pos"][2] += nz * BOSS_SPEED * dt * 60
+        elif dist < DESIRED_DIST - 2:
+            boss["pos"][0] -= nx * BOSS_SPEED * dt * 60
+            boss["pos"][2] -= nz * BOSS_SPEED * dt * 60
 
     # strafe randomly
     if random.random() < 0.01:  # sometimes flip direction
         boss["strafe_dir"] *= -1
-    boss["pos"][0] += boss["strafe_dir"] * BOSS_STRAFE_SPEED
+    boss["pos"][0] += boss["strafe_dir"] * BOSS_STRAFE_SPEED * dt * 60
 
     # ---------------- Shooting ----------------
     shoot()
 
     # ---------------- Update projectiles ----------------
-    for proj in projectiles:
-        proj["pos"][0] += proj["dir"][0] * PROJECTILE_SPEED
-        proj["pos"][1] += proj["dir"][1] * PROJECTILE_SPEED
-        proj["pos"][2] += proj["dir"][2] * PROJECTILE_SPEED
+    for proj in projectiles[:]:
+        proj["pos"][0] += proj["dir"][0] * PROJECTILE_SPEED * dt * 60
+        proj["pos"][1] += proj["dir"][1] * PROJECTILE_SPEED * dt * 60
+        proj["pos"][2] += proj["dir"][2] * PROJECTILE_SPEED * dt * 60
 
         # collision with player
         dx = proj["pos"][0] - player.pos[0]
@@ -145,3 +149,16 @@ def hit_by_player():
             ox = random.choice([-1, 1]) * random.uniform(1.0, 2.0)
             oz = random.choice([-1, 1]) * random.uniform(1.0, 2.0)
             enemy.spawn_enemy(x=bx + ox, y=by, z=bz + oz)
+
+
+# boss.py
+def reset_boss():
+    """Despawn boss and clear projectiles"""
+    global boss_spawned, projectiles
+    boss_spawned = False
+    projectiles.clear()
+    boss["pos"] = [-87.5, 0.75, 67.5]  # reset spawn position
+    boss["health"] = 100
+    boss["hit_count"] = 0
+    boss["stunned_until"] = 0
+    boss["last_shot"] = time.time()

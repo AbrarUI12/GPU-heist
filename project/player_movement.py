@@ -23,7 +23,6 @@ def checkFloorCollision(x, y, z, floor_num):
     return False
 
 def movePlayer(dirSign, dt, speed):
-    print(crouch.is_crouching)
     if crouch.is_crouching:
         speed *= 0.3
     

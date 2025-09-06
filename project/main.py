@@ -21,6 +21,7 @@ import floors
 import floor_transitions  
 import game_states
 import spawn_ammocrate
+from camera import setupCamera, drawCrosshair
 
 
 
@@ -29,7 +30,7 @@ WIN_W, WIN_H = 1024, 720
 GRID_STEP = 5.0
 CAMERA_DIST = 10.0
 PLAYER_Y = 0.75
-
+dt = 0.016
 # Camera settings
 firstPerson = False
 camYawDeg = 30.0
@@ -146,13 +147,27 @@ def on_display():
         # Draw game objects only if on same floor as player
         if current_floor == 0:  # Ground floor items
             spawn_ammocrate.draw_ammo_crate()
+        
+        
+        
         balls.draw_balls() 
         enemy.draw_enemies()
         
         throw_ball.draw_balls()
+            # ✅ Spawn boss only on floor 3
+        if current_floor == 3:
+            if not boss.boss_spawned:
+                boss.boss_spawned = True
+                print("[BOSS SPAWNED] The final boss has appeared!")
+            boss.update_boss(dt)
+        else:
+            if boss.boss_spawned:
+                boss.reset_boss()
+                print("[BOSS DESPAWNED] Player left floor 3")
         
         # Draw player
         boss.draw_boss()
+        drawCrosshair()
         glPushMatrix()
         glTranslatef(player.pos[0], player.pos[1], player.pos[2])
         glRotatef(player.angDeg, 0, 1, 0)
@@ -275,7 +290,7 @@ def on_keyboard(key, x, y):
     if game_states.get_current_game_state() == game_states.GAME_MENU:
         if key == b'1':
             selected_model = "Abrar"
-            player.balls = 2
+            player.balls = 10000
             player.health = 10
             game_states.set_game_state(game_states.GAME_PLAYING)
             set_player_spawn_at_door()  # Spawn at door
@@ -414,6 +429,7 @@ def update():
     
     throw_ball.update_balls(dt)
     spawn_ammocrate.check_crate_collection(player)
+    boss.update_boss(dt)
 
 
     glutPostRedisplay()

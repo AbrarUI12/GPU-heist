@@ -11,7 +11,7 @@ import boss
 BALL_SPEED = 15.0       # units per second
 BALL_LIFETIME = 3.0     # seconds before disappearing
 BALL_RADIUS = 0.5       # visual radius
-THROW_HEIGHT = 0.8      # height from player's position
+THROW_HEIGHT = 1.2      # height from player's position
 
 # Active thrown balls
 thrown_balls = []
@@ -39,7 +39,9 @@ def throw_ball():
     player.balls -= 1  # decrement available balls
 
 def update_balls(dt):
-    """Move all active balls and check collisions with enemies."""
+    """Move all active balls and check collisions with enemies & boss."""
+    dead_enemies = []
+
     for ball_obj in thrown_balls:
         if not ball_obj.active:
             continue
@@ -55,24 +57,23 @@ def update_balls(dt):
             ball_obj.active = False
             continue
 
-        # Check collision with enemies
+        # --- Collision with enemies ---
         for e in enemy.enemies:
             dx = ball_obj.pos[0] - e.pos[0]
-            dy = ball_obj.pos[1] - e.pos[1]
+            dy = ball_obj.pos[1] - (e.pos[1] + 0.9)  # shift up ~torso height
             dz = ball_obj.pos[2] - e.pos[2]
             dist = math.sqrt(dx*dx + dy*dy + dz*dz)
 
-            enemy_hit_radius = 0.5 * e.scale  # scale-based hitbox
+            enemy_hit_radius = 1.0 * e.scale   # bigger hitbox
             if dist < BALL_RADIUS + enemy_hit_radius:
                 e.health -= 1
                 print(f"Enemy hit! Health now {e.health}")
                 ball_obj.active = False
-
-                # Remove enemy if health <= 0
                 if e.health <= 0:
-                    enemy.enemies.remove(e)
+                    dead_enemies.append(e)
                 break
-        #  Check collision with boss
+
+        # --- Collision with boss ---
         dx = ball_obj.pos[0] - boss.boss["pos"][0]
         dy = ball_obj.pos[1] - boss.boss["pos"][1]
         dz = ball_obj.pos[2] - boss.boss["pos"][2]
@@ -81,6 +82,12 @@ def update_balls(dt):
         if dist < BALL_RADIUS + boss.BOSS_RADIUS:
             boss.hit_by_player()
             ball_obj.active = False
+
+    # remove dead enemies AFTER loop
+    for e in dead_enemies:
+        if e in enemy.enemies:
+            enemy.enemies.remove(e)
+
 
 def draw_balls():
     """Render all active thrown balls."""
