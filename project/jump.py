@@ -1,5 +1,6 @@
 # jump.py
 # Smooth parabolic jump for your player
+import floors
 
 GRAVITY = -20.0       # acceleration downward (units/sec^2)
 JUMP_SPEED = 10.0     # initial upward velocity
@@ -20,9 +21,7 @@ from obstacles import obstacles  # your obstacle list/dict
 
 def update_jump(player, dt):
     """
-    Update player's vertical position, including landing on obstacles.
-    player: Player object
-    dt: delta time in seconds
+    Update player's vertical position, including landing on floor obstacles.
     """
     global is_jumping, vertical_velocity
 
@@ -36,8 +35,12 @@ def update_jump(player, dt):
     vertical_velocity += GRAVITY * dt
 
     landed = False
+    current_floor = floors.get_current_floor()
+    floor_y_offset = floors.get_floor_y_offset(current_floor)
+    ground_y = floor_y_offset + 0.75  # Floor level + player height offset
 
-    # Check collision with obstacles
+    # Check collision with current floor obstacles
+    obstacles = floors.get_floor_obstacles(current_floor)
     for obs in obstacles:
         ox, oy, oz = obs["pos"]   # obstacle center
         w, h, d = obs["size"]     # obstacle width/height/depth
@@ -56,9 +59,9 @@ def update_jump(player, dt):
                 landed = True
                 break
 
-    # Check collision with ground
-    if not landed and new_y <= GROUND_Y:
-        new_y = GROUND_Y
+    # Check collision with current floor ground
+    if not landed and new_y <= ground_y:
+        new_y = ground_y
         vertical_velocity = 0.0
         is_jumping = False
 
