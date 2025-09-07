@@ -507,7 +507,7 @@ def on_keyboard(key, x, y):
     if game_states.get_current_game_state() == game_states.GAME_MENU:
         if key == b'1':
             selected_model = "Abrar"
-            player.balls = 60
+            player.balls = 6
             player.health = 10
             game_states.set_game_state(game_states.GAME_PLAYING)
             set_player_spawn_at_door()
