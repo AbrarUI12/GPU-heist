@@ -271,6 +271,10 @@ def on_display():
         
         # Draw game objects only if on same floor as player
         if current_floor == 0:  # Ground floor items
+          spawn_ammocrate.draw_ammo_crate()      
+       
+       
+        if current_floor == 1:  # Ground floor items
             spawn_ammocrate.draw_ammo_crate()
         
         balls.draw_balls() 
@@ -503,19 +507,19 @@ def on_keyboard(key, x, y):
     if game_states.get_current_game_state() == game_states.GAME_MENU:
         if key == b'1':
             selected_model = "Abrar"
-            player.balls = 10000
+            player.balls = 60
             player.health = 10
             game_states.set_game_state(game_states.GAME_PLAYING)
             set_player_spawn_at_door()
         elif key == b'2':
             selected_model = "Sanjoy"
-            player.balls = 6
+            player.balls = 12
             player.health = 10
             game_states.set_game_state(game_states.GAME_PLAYING)
             set_player_spawn_at_door()
         elif key == b'3':
             selected_model = "Ishrak"
-            player.balls = 2
+            player.balls = 6
             player.health = 20
             game_states.set_game_state(game_states.GAME_PLAYING)
             set_player_spawn_at_door()

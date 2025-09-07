@@ -17,8 +17,8 @@ def spawn_ammo_crate():
     """Spawn exactly one ammo crate at a random location."""
     global ammo_crate
     x = random.uniform(-WORLD_HALF + CRATE_SIZE, WORLD_HALF - CRATE_SIZE)
-    z = random.uniform(-WORLD_HALF + CRATE_SIZE, WORLD_HALF - CRATE_SIZE)
-    y = 0.75  # ground level
+    z = random.uniform(-WORLD_HALF + CRATE_SIZE, WORLD_HALF - CRATE_SIZE)   
+    y = 15.8  
 
     ammo_crate = {"pos": [x, y, z], "collected": False}
 

@@ -17,9 +17,9 @@ PLAYER_DETECT_TIME = 0.5     # seconds player must remain in radius to trigger a
 HIGH_ALERT_MIN = 5.0         # min seconds to stay in high alert
 HIGH_ALERT_MAX = 9.0         # max seconds to stay in high alert
 DEFAULT_WANDER_SPEED = 0.5
-DEFAULT_ATTACK_SPEED = 1.0
+DEFAULT_ATTACK_SPEED = 3.5
 DEFAULT_HIGH_ALERT_WANDER_SPEED = 0.8
-COLLISION_RADIUS = 1.0
+COLLISION_RADIUS = 1.5
 COLLISION_DAMAGE = 1
 
 # List to hold all enemies
